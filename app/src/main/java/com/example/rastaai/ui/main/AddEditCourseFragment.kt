@@ -1,3 +1,4 @@
+// ui/main/AddEditCourseFragment.kt
 package com.example.rastaai.ui.main
 
 import android.os.Bundle
@@ -5,9 +6,6 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
-import androidx.activity.addCallback
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -26,10 +24,11 @@ class AddEditCourseFragment : Fragment(R.layout.fragment_add_edit_course) {
     private val vm: AddEditCourseViewModel by viewModels()
     private val args: AddEditCourseFragmentArgs by navArgs()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private val SENTINEL = -1L
+    private val courseId: Long by lazy { args.courseId }
 
-        val titleHeader = view.findViewById<android.widget.TextView>(R.id.titleHeader)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         val inputTitle = view.findViewById<TextInputEditText>(R.id.inputTitle)
         val inputDesc = view.findViewById<TextInputEditText>(R.id.inputDesc)
         val inputLessons = view.findViewById<TextInputEditText>(R.id.inputLessons)
@@ -37,136 +36,79 @@ class AddEditCourseFragment : Fragment(R.layout.fragment_add_edit_course) {
         val btnSave = view.findViewById<MaterialButton>(R.id.btnSave)
         val btnCancel = view.findViewById<MaterialButton>(R.id.btnCancel)
 
-        val courseId: Long = args.courseId
-        val isEditing = courseId != -1L
+        val isEditing = courseId != SENTINEL
 
-        // Set header title based on mode
-        titleHeader.text = if (isEditing) {
-            "Edit Course"
-        } else {
-            "Create New Course"
-        }
+        view.findViewById<android.widget.TextView>(R.id.titleHeader).text =
+            if (isEditing) "Edit Course" else "Create New Course"
 
-        // Setup edge-to-edge
-        setupEdgeToEdge(view)
-
-        // Handle back button press
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            findNavController().navigateUp()
-        }
-
-        // Load categories and set spinner adapter
+        // Load categories
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             vm.categories.collectLatest { list ->
-                val names = list.map { it.name }
-                val adapter = ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_spinner_item,
-                    names
-                ).apply {
-                    setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                }
+
+                val names = mutableListOf("Select category")
+                names.addAll(list.map { it.name })
+
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, names)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinner.adapter = adapter
 
-                // Preselect category when editing
                 if (isEditing) {
                     launch {
                         val course = vm.loadCourse(courseId)
                         course?.let {
                             val index = list.indexOfFirst { c -> c.id == it.categoryId }
-                            if (index >= 0) {
-                                spinner.setSelection(index)
-                            }
+                            if (index >= 0) spinner.setSelection(index + 1)
                         }
                     }
                 }
             }
         }
 
-        // Load existing course if editing
+        // If editing load values
         if (isEditing) {
             viewLifecycleOwner.lifecycleScope.launch {
-                vm.loadCourse(courseId)?.let { course ->
-                    inputTitle.setText(course.title)
-                    inputDesc.setText(course.description)
-                    inputLessons.setText(course.lessons.toString())
+                vm.loadCourse(courseId)?.let {
+                    inputTitle.setText(it.title)
+                    inputDesc.setText(it.description)
+                    inputLessons.setText(it.lessons.toString())
                 }
             }
         }
 
         btnSave.setOnClickListener {
-            saveCourse(inputTitle, inputDesc, inputLessons, spinner)
+            val title = inputTitle.text.toString().trim()
+            val desc = inputDesc.text.toString().trim()
+            val lessons = inputLessons.text.toString().toIntOrNull() ?: 0
+            val pos = spinner.selectedItemPosition
+
+            if (title.isEmpty()) return@setOnClickListener show("Title required")
+            if (lessons <= 0) return@setOnClickListener show("Enter valid lessons")
+
+            if (pos == 0) return@setOnClickListener show("Select category")
+
+            val category = vm.categories.value[pos - 1]
+
+            vm.saveCourse(
+                id = if (isEditing) courseId else null,
+                title = title,
+                desc = desc,
+                categoryId = category.id,
+                categoryName = category.name,
+                lessons = lessons
+            ) {
+                it.onSuccess {
+                    show("Saved")
+                    findNavController().navigateUp()
+                }.onFailure { ex ->
+                    show("Error: ${ex.message}")
+                }
+            }
         }
 
-        btnCancel.setOnClickListener {
-            findNavController().navigateUp()
-        }
+        btnCancel.setOnClickListener { findNavController().navigateUp() }
     }
 
-    private fun saveCourse(
-        inputTitle: TextInputEditText,
-        inputDesc: TextInputEditText,
-        inputLessons: TextInputEditText,
-        spinner: Spinner
-    ) {
-        val title = inputTitle.text.toString().trim()
-        val desc = inputDesc.text.toString().trim()
-        val lessons = inputLessons.text.toString().toIntOrNull() ?: 0
-        val selectedPosition = spinner.selectedItemPosition
-        val category = if (selectedPosition >= 0) {
-            vm.categories.value.getOrNull(selectedPosition)
-        } else {
-            null
-        }
-
-        // Validation
-        when {
-            title.isEmpty() -> {
-                showError("Title is required")
-                inputTitle.requestFocus()
-                return
-            }
-            lessons <= 0 -> {
-                showError("Enter valid lesson count")
-                inputLessons.requestFocus()
-                return
-            }
-            selectedPosition < 0 -> {
-                showError("Please select a category")
-                return
-            }
-        }
-
-        vm.saveCourse(
-            id = if (args.courseId == -1L) null else args.courseId,
-            title = title,
-            description = desc,
-            categoryId = category?.id,
-            categoryName = category?.name,
-            lessons = lessons
-        ) { result ->
-            result.onSuccess {
-                findNavController().navigateUp()
-            }.onFailure {
-                showError("Failed to save: ${it.message}")
-            }
-        }
-    }
-
-    private fun showError(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun setupEdgeToEdge(view: View) {
-        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(
-                v.paddingLeft,
-                systemBars.top,
-                v.paddingRight,
-                systemBars.bottom
-            )
-            insets
-        }
+    private fun show(msg: String) {
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
     }
 }

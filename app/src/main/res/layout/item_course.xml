@@ -1,58 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_margin="8dp"
     android:layout_height="wrap_content"
-    android:elevation="3dp"
+    card:cardCornerRadius="8dp"
+    android:layout_marginBottom="8dp"
+    card:cardElevation="2dp"
     android:padding="12dp">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/title"
-            android:textStyle="bold"
-            android:textSize="18sp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Course Title"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"/>
 
         <TextView
             android:id="@+id/description"
-            android:textSize="14sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="4dp" />
+            android:layout_below="@id/title"
+            android:text="Short description"
+            android:textSize="14sp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_marginTop="4dp" />
 
         <TextView
             android:id="@+id/category"
-            android:textSize="14sp"
-            android:paddingTop="4dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:gravity="bottom"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp">
+            android:layout_below="@id/description"
+            android:text="Category"
+            android:textSize="12sp"
+            android:layout_marginTop="8dp" />
 
-            <TextView
-                android:id="@+id/score"
-                android:textStyle="bold"
-                android:textSize="15sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/category"
+            android:layout_alignParentEnd="true"
+            android:text="Score: 0"
+            android:textSize="12sp" />
 
-            <ImageView
-                android:id="@+id/btnDelete"
-                android:src="@drawable/ic_delete"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:tint="@android:color/holo_red_dark" />
-        </LinearLayout>
+        <ImageView
+            android:id="@+id/btnDelete"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/description"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="36dp"
+            android:contentDescription="Delete"
+            android:src="@drawable/ic_delete" />
 
-    </LinearLayout>
+    </RelativeLayout>
 </androidx.cardview.widget.CardView>

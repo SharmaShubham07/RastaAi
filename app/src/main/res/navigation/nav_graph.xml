@@ -9,8 +9,6 @@
         android:name="com.example.rastaai.ui.main.CourseListFragment"
         android:label="Courses">
 
-        <!-- Navigates to Add/Edit. Because addEditCourseFragment declares a required long argument,
-             this generated action will require a Long parameter (we'll pass -1L for "new"). -->
         <action
             android:id="@+id/action_courseList_to_addCourse"
             app:destination="@id/addEditCourseFragment" />
@@ -25,8 +23,6 @@
         android:name="com.example.rastaai.ui.main.AddEditCourseFragment"
         android:label="Add / Edit Course">
 
-        <!-- IMPORTANT: no defaultValue / no nullable. SafeArgs expects a long parameter when navigating.
-             We'll pass -1L to represent "create new". -->
         <argument
             android:name="courseId"
             app:argType="long" />
