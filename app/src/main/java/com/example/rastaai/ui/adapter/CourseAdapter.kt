@@ -3,13 +3,14 @@ package com.example.rastaai.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rastaai.R
 import com.example.rastaai.data.local.db.CourseEntity
+import com.google.android.material.button.MaterialButton  // Add this import
+import com.google.android.material.chip.Chip  // Add this import
 
 class CourseAdapter(
     private val onClick: (CourseEntity) -> Unit,
@@ -26,15 +27,15 @@ class CourseAdapter(
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val title = itemView.findViewById<TextView>(R.id.title)
         private val description = itemView.findViewById<TextView>(R.id.description)
-        private val category = itemView.findViewById<TextView>(R.id.category)
-        private val score = itemView.findViewById<TextView>(R.id.score)
-        private val btnDelete = itemView.findViewById<ImageView>(R.id.btnDelete)
+        private val category = itemView.findViewById<Chip>(R.id.category)  // Changed to Chip
+        private val score = itemView.findViewById<Chip>(R.id.score)        // Changed to Chip
+        private val btnDelete = itemView.findViewById<MaterialButton>(R.id.btnDelete)  // Changed to MaterialButton
 
         fun bind(item: CourseEntity) {
             title.text = item.title
             description.text = item.description
-            category.text = item.categoryName ?: "Uncategorized"
-            score.text = "Score: ${item.score}"
+            category.text = item.categoryName ?: "Uncategorized"  // Set chip text
+            score.text = item.score?.toString() ?: "0"  // Set chip text (removed "Score: " prefix)
 
             itemView.setOnClickListener { onClick(item) }
             btnDelete.setOnClickListener { onDeleteClick(item) }

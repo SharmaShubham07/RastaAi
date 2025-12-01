@@ -4,105 +4,203 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/course_list_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="?attr/colorSurface">
 
-    <!-- App bar / search row -->
-    <LinearLayout
-        android:id="@+id/headerRow"
+    <!-- Modern Elevated App Bar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:background="?attr/colorSurface"
-        android:elevation="4dp">
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
+        app:liftOnScroll="true"
+        app:statusBarForeground="?attr/colorSurface"
+        app:liftOnScrollTargetViewId="@+id/recyclerView">
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchView"
-            android:layout_width="0dp"
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:queryHint="Search courses" />
+            android:layout_margin="12dp"
+            app:cardElevation="6dp"
+            app:cardCornerRadius="20dp"
+            app:strokeWidth="0dp"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
 
-        <!-- Placeholder for future filter button -->
-        <ImageButton
-            android:id="@+id/btnFilter"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_delete"
-            android:contentDescription="Filter"
-            android:background="?selectableItemBackgroundBorderless"
-            android:layout_marginStart="8dp"/>
-    </LinearLayout>
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                app:title="Courses"
+                app:titleCentered="false"
+                app:titleTextColor="?attr/colorOnSurface"
+                android:paddingHorizontal="4dp">
 
-    <!-- Content area -->
-    <FrameLayout
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp">
+
+                    <!-- SearchView Wrapped in Card -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="12dp"
+                        android:layout_toStartOf="@+id/btnFilter"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="1dp"
+                        app:strokeWidth="0dp"
+                        app:cardBackgroundColor="@color/white">
+
+                        <androidx.appcompat.widget.SearchView
+                            android:id="@+id/searchView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:queryHint="Search courses..."
+                            android:iconifiedByDefault="false"
+                            app:searchHintIcon="@null"
+                            app:queryBackground="@android:color/transparent"
+                            android:background="@android:color/transparent" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Premium Filter Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnFilter"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="44dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:minWidth="0dp"
+                        android:text="Filter"
+                        android:paddingHorizontal="18dp"
+                        app:icon="@drawable/ic_filter"
+                        app:iconSize="20dp"
+                        app:iconPadding="6dp"
+                        app:cornerRadius="22dp" />
+
+                </RelativeLayout>
+            </com.google.android.material.appbar.MaterialToolbar>
+        </com.google.android.material.card.MaterialCardView>
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <!-- Content Area -->
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="0dp"
+        android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- Recycler -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
-            android:padding="12dp"
-            android:clipToPadding="false"/>
+            android:background="@color/white">
 
-        <!-- Empty state -->
-        <LinearLayout
-            android:id="@+id/emptyState"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:visibility="gone"
-            android:padding="32dp">
+            <!-- Recycler -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:paddingVertical="8dp"
+                android:clipToPadding="false"
+                android:scrollbars="vertical"
+                android:overScrollMode="never" />
 
-            <ImageView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:src="@drawable/ic_delete"
-                android:contentDescription="No courses" />
+            <!-- Empty State -->
+            <LinearLayout
+                android:id="@+id/emptyState"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:paddingHorizontal="48dp"
+                android:paddingVertical="64dp">
 
-            <TextView
-                android:id="@+id/emptyView"
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="3dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainer">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="30dp"
+                        android:src="@drawable/ic_book"
+                        android:scaleType="centerInside" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/emptyView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="28dp"
+                    android:text="No courses yet"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="-0.01"
+                    android:textColor="?attr/colorOnSurface" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Add your first course to get started"
+                    android:textSize="16sp"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:gravity="center" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAddFirst"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Add Course"
+                    android:paddingHorizontal="32dp"
+                    app:icon="@drawable/ic_add"
+                    app:iconPadding="8dp"
+                    app:cornerRadius="20dp" />
+
+            </LinearLayout>
+
+            <!-- Loading Indicator -->
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No courses yet"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginTop="12dp"/>
+                android:visibility="gone"
+                android:layout_gravity="center"
+                app:indicatorColor="?attr/colorPrimary"
+                app:trackColor="?attr/colorSurfaceVariant" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tap + to add your first course"
-                android:textSize="14sp"
-                android:layout_marginTop="8dp"/>
-        </LinearLayout>
+        </FrameLayout>
+    </androidx.core.widget.NestedScrollView>
 
-        <!-- Loading -->
-        <ProgressBar
-            android:id="@+id/progress"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_gravity="center"
-            android:visibility="gone" />
 
-    </FrameLayout>
-
-    <!-- Floating Action Button -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <!-- Modern Floating Button -->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fabAdd"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_anchor="@id/course_list_root"
-        app:layout_anchorGravity="bottom|end"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add" />
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="20dp"
+        android:text="Add Course"
+        android:paddingHorizontal="24dp"
+        app:icon="@drawable/ic_add"
+        app:iconPadding="10dp"
+        app:iconSize="26dp"
+        app:elevation="6dp"
+        app:cornerRadius="28dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

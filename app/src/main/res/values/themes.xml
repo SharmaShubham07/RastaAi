@@ -1,9 +1,40 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Base application theme. -->
     <style name="Base.Theme.RastaAi" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
+
+    <style name="ShapeAppearanceOverlay.LargeComponent" parent="">
+        <item name="cornerSize">28dp</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.MediumComponent" parent="">
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <!-- FAB Animation -->
+    <animator name="fab_show_motion_spec">
+        <propertyValuesHolder
+            android:propertyName="scaleX"
+            android:valueFrom="0"
+            android:valueTo="1" />
+        <propertyValuesHolder
+            android:propertyName="scaleY"
+            android:valueFrom="0"
+            android:valueTo="1" />
+    </animator>
+
+    <animator name="fab_hide_motion_spec">
+        <propertyValuesHolder
+            android:propertyName="scaleX"
+            android:valueFrom="1"
+            android:valueTo="0" />
+        <propertyValuesHolder
+            android:propertyName="scaleY"
+            android:valueFrom="1"
+            android:valueTo="0" />
+    </animator>
 
     <style name="Theme.RastaAi" parent="Base.Theme.RastaAi" />
 </resources>

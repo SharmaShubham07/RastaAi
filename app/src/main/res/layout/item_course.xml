@@ -1,67 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card:cardCornerRadius="8dp"
-    android:layout_marginBottom="8dp"
-    card:cardElevation="2dp"
-    android:padding="12dp">
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    android:padding="0dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="1dp"
+    app:strokeColor="?attr/colorOutline"
+    app:strokeWidth="1dp"
+    app:cardBackgroundColor="?attr/colorSurfaceContainerLow">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp">
 
-        <TextView
-            android:id="@+id/title"
+        <!-- Header Row -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Course Title"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
+            <!-- Course Title -->
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Course Title"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="?attr/colorOnSurface"
+                android:letterSpacing="-0.01" />
+
+            <!-- Score Chip -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/score"
+                style="@style/Widget.Material3.Chip.Assist"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="0"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                app:chipBackgroundColor="?attr/colorSecondaryContainer"
+                app:chipIcon="@drawable/ic_star"
+                app:chipIconTint="?attr/colorOnSecondaryContainer"
+                app:chipIconSize="16dp"
+                app:textStartPadding="8dp"
+                app:textEndPadding="12dp" />
+
+        </LinearLayout>
+
+        <!-- Description -->
         <TextView
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/title"
-            android:text="Short description"
+            android:layout_marginTop="8dp"
+            android:text="Short description of the course content and objectives"
             android:textSize="14sp"
             android:maxLines="2"
             android:ellipsize="end"
-            android:layout_marginTop="4dp" />
+            android:lineSpacingExtra="4dp"
+            android:textColor="?attr/colorOnSurfaceVariant" />
 
-        <TextView
-            android:id="@+id/category"
-            android:layout_width="wrap_content"
+        <!-- Footer Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/description"
-            android:text="Category"
-            android:textSize="12sp"
-            android:layout_marginTop="8dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="16dp">
 
-        <TextView
-            android:id="@+id/score"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/category"
-            android:layout_alignParentEnd="true"
-            android:text="Score: 0"
-            android:textSize="12sp" />
+            <!-- Category Chip -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/category"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="Category"
+                android:textSize="12sp"
+                app:chipBackgroundColor="?attr/colorSurfaceContainerHighest"
+                app:chipStrokeColor="?attr/colorOutline"
+                app:chipStrokeWidth="1dp"
+                app:cornerRadius="14dp" />
 
-        <ImageView
-            android:id="@+id/btnDelete"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/description"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="36dp"
-            android:contentDescription="Delete"
-            android:src="@drawable/ic_delete" />
+            <!-- Spacer -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-    </RelativeLayout>
-</androidx.cardview.widget.CardView>
+            <!-- Delete Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDelete"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="Delete"
+                android:textSize="12sp"
+                app:icon="@drawable/ic_delete"
+                app:iconSize="16dp"
+                app:iconGravity="textStart"
+                app:iconPadding="4dp"
+                app:iconTint="?attr/colorError" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
